@@ -21,17 +21,16 @@ public class MainActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.activity_main);
+        setContentView(new GameView(this));
 
         newGame = findViewById(R.id.newgame);
 
-        newGame.setOnClickListener(new View.OnClickListener() {
+/*        newGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),GameActivity.class));
             }
-        });
-
+        });*/
 
     }
 }
