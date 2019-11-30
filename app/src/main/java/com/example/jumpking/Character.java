@@ -4,10 +4,13 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Picture;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.util.Log;
 
 import static com.example.jumpking.MainThread.canvas;
 
@@ -21,13 +24,16 @@ public class Character {
     private int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     private int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
-    private int x;
-    private int y;
+    public int x;
+    public int y;
     private int jumpHeight;
     private int lastPosition;
     private boolean top;
-    private char lastDir;
+    private char lastDir = 'P';
     private boolean falling = false;
+    private ObstacleManager obstacleManager;
+
+    private int speed = 15;
 
     public Character(Bitmap bmp, Drawable bg, Bitmap left, Bitmap right){
         image = bmp;
@@ -35,11 +41,14 @@ public class Character {
         this.right = right;
 
         background = bg;
+        this.falling = false;
         this.x= 500;
-        this.y= 1450;
+        this.y= 1400;
         this.jumpHeight = this.y;
-        this.lastPosition = 1450;
+        this.lastPosition = this.y;
         this.top = true;
+        this.obstacleManager = new ObstacleManager();
+        obstacleManager.generetateView();
 
     }
 
@@ -49,69 +58,109 @@ public class Character {
         canvas.drawBitmap(left, 100,1600, null);
         canvas.drawBitmap(right, 800,1600, null);
 
+        for (Obstacle o: obstacleManager.getObstacles()) {
+            o.draw(canvas);
+        }
     }
 
 
     public void update(char dir){
-
         switch(dir){
             case 'S':
 
-                if((this.y != jumpHeight) && !top){
-                    if(lastDir == 'P'){
-                        y-=4;
-                        x+=4;
-                    }
-                    if(lastDir == 'L'){
-                        y-=4;
-                        x-=4;
-                    }
+                if(obstacleManager.CollideBottom(this.x,this.y)){
 
-
+                    falling = false;
                 }
-                else if((this.y != lastPosition)){
-                    top = true;
-                    falling = true;
-                    if(lastDir == 'P'){
-                        y+=4;
-                        x+=4;
-                    }
-                    if(lastDir == 'L'){
-                        y+=4;
-                        x-=4;
+                    if ((this.y != jumpHeight) && !top) {
+                        falling = true;
+                        if(obstacleManager.CollideRight(this.x, this.y)){
+                            lastDir = 'L';
+                        }
+                        if(obstacleManager.CollideLeft(this.x, this.y)){
+                            lastDir = 'P';
+                        }
+                        if (lastDir == 'P') {
+                            y -= speed;
+                            x += speed;
+                        }
+                        if (lastDir == 'L') {
+                            y -= speed;
+                            x -= speed;
+                        }
+                    } else if (falling) {
+                        if(obstacleManager.CollideBottom(this.x, this.y)){
+                            falling = false;
+                            return;
+                        }
+                        if(obstacleManager.CollideRight(this.x, this.y)){
+                            lastDir = 'L';
+                        }
+                        if(obstacleManager.CollideLeft(this.x, this.y)){
+                            lastDir = 'P';
+                        }
+                        top = true;
+
+                        if (lastDir == 'P') {
+                            y += speed;
+                            x += speed;
+                        }
+                        if (lastDir == 'L') {
+                            y += speed;
+                            x -= speed;
+                        }
                     }
 
-                    jumpHeight = lastPosition;
+                    else {
+                        top = true;
+                        lastPosition = y;
+                        jumpHeight = lastPosition;
+                        falling = false;
+                    }
+                break;
+            case 'P':
+                if(!obstacleManager.CollideBottom(this.x,this.y)){
+                    y += speed;
+                    x += speed;
+                    falling = true;
+                }
+                else {
+                    falling = false;
+                    jumpHeight = y;
+                    top = true;
+                }
+
+                    if (!falling && !obstacleManager.CollideRight(this.x, this.y)) {
+                        x += speed;
+                        lastDir = 'P';
+                    }
+
+                break;
+            case 'L':
+                if(!obstacleManager.CollideBottom(this.x,this.y)){
+                    y += speed;
+                    x -= speed;
+                    falling = true;
                 }
                 else{
                     falling = false;
                 }
-                break;
-            case 'P':
-                if(!falling){
-                    x+=2;
-                    lastDir = 'P';
-                }
-
-                break;
-            case 'L':
-                if(!falling) {
-                    x -= 2;
+                if(!falling && !obstacleManager.CollideLeft(this.x, this.y )) {
+                    x -= speed;
                     lastDir = 'L';
                 }
                 break;
             case 'N':
                 if(!falling) {
-                    jumpHeight -= 8;
+                    jumpHeight -= speed;
                     top = false;
                 }
                 break;
 
         }
-
-
-
-
-
+        Log.d("smer", String.valueOf(dir));
+    }
+    public boolean isFalling(){
+        return falling;
     }
 }

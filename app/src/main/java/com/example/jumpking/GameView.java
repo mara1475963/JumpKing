@@ -71,11 +71,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-
+        if(character.isFalling()){
+            return true;
+        }
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 Log.d("x", String.valueOf(e.getX()));
                 Log.d("y", String.valueOf(e.getY()));
+
 
                 if((e.getX() > 100 && e.getX() <300) && (e.getY() > 1600 && e.getY() <1700)){
                     direction = 'L';
@@ -86,9 +89,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 else{
                     direction = 'N';
                 }
-
-
-
 
                 break;
             case MotionEvent.ACTION_UP:
