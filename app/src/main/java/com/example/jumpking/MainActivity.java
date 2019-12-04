@@ -15,6 +15,9 @@ import android.widget.Button;
 public class MainActivity extends Activity {
 
     Button newGame;
+    Button continueGame;
+    SharedPreferences preset;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,16 +26,34 @@ public class MainActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        preset = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = preset.edit();
+
         setContentView(new GameView(this));
+       /* setContentView(R.layout.activity_main);
 
         newGame = findViewById(R.id.newgame);
-
-/*        newGame.setOnClickListener(new View.OnClickListener() {
+        continueGame = findViewById(R.id.continueGame);
+        newGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),GameActivity.class));
-            }
-        });*/
+                editor.putBoolean("com.example.jumpking.newGame",true);
+                editor.commit();
 
+                Intent intent =new Intent(getApplicationContext(),GameActivity.class);
+                startActivity(intent);
+            }
+        });
+        continueGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editor.putBoolean("com.example.jumpking.newGame",false);
+                editor.commit();
+
+                Intent intent =new Intent(getApplicationContext(),GameActivity.class);
+                startActivity(intent);
+            }
+        });
+*/
     }
 }

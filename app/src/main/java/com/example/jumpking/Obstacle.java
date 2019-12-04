@@ -26,13 +26,13 @@ public class Obstacle {
         if(y>1800){
             return 2;
         }
-        if((rectangle.contains(x+20,y+90)) || (rectangle.contains(x+65,y+90))){
+        if((rectangle.contains(x+20,y+87)) || (rectangle.contains(x+65,y+87))){
             return 1;
         }
         return 0;
     }
     public boolean CollideRight(int x, int y){
-        if(x +85>Consts.screenWidth){
+        if(x +95>Consts.screenWidth){
             return true;
         }
         if((rectangle.contains(x+90,y+20)) || (rectangle.contains(x+90,y+65))){
@@ -42,10 +42,10 @@ public class Obstacle {
         return false;
     }
     public boolean CollideLeft(int x, int y){
-        if(x<1){
+        if(x<10){
             return true;
         }
-        if((rectangle.contains(x-5,y+20)) || (rectangle.contains(x-5,y+65))){
+        if((rectangle.contains(x-10,y+20)) || (rectangle.contains(x-10,y+65))){
             return true;
         }
         return false;
@@ -54,9 +54,7 @@ public class Obstacle {
         if(y<0){
             return 2;
         }
-
-
-        if((rectangle.contains(x+20,y-15)) || (rectangle.contains(x+65,y-15))){
+        if((rectangle.contains(x+10,y-15)) || (rectangle.contains(x+75,y-15))){
             return 1;
         }
         return 0;

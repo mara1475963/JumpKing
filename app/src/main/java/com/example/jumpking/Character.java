@@ -20,6 +20,10 @@ public class Character {
     private Bitmap image;
     private Bitmap left;
     private Bitmap right;
+    private Bitmap up;
+    private Bitmap left2;
+    private Bitmap right2;
+    private Bitmap up2;
     private Drawable background;
     private Drawable background2;
     private int xVelocity = 10;
@@ -30,6 +34,9 @@ public class Character {
     public int x;
     public int y;
     private int jumpHeight;
+    private int jumpBar;
+    private int maxJumpHeight;
+
     private int lastPosition;
     private boolean top;
     private char lastDir = 'P';
@@ -39,50 +46,74 @@ public class Character {
 
     private int speed = 15;
 
-    public Character(Bitmap bmp, Drawable bg,Drawable bg2, Bitmap left, Bitmap right){
+    public Character(Bitmap bmp, Drawable bg,Drawable bg2, Bitmap left, Bitmap right,Bitmap up, Bitmap left2, Bitmap right2,Bitmap up2, int level, int x, int y){
 
         image = bmp;
         this.left = left;
         this.right = right;
+        this.up = up;
+        this.left2 = left2;
+        this.right2 = right2;
+        this.up2 = up2;
 
         background = bg;
         background2 = bg2;
         this.falling = false;
-        this.x= 150;
-        this.y= 200;
+        this.x= x;
+        this.y= y;
         this.jumpHeight = this.y;
+        this.jumpHeight = 0;
+        this.maxJumpHeight = 400;
         this.lastPosition = this.y;
         this.top = true;
-        this.LEVEL =1;
-
-
+        this.LEVEL = level;
 
         this.obstacleManager = new ObstacleManager();
         obstacleManager.generetateView();
-
     }
 
     public  void draw(Canvas canvas){
 
-        if(LEVEL ==1) {
+        if(LEVEL == 1) {
             background.draw(canvas);
         }
         else if(LEVEL == 2){
             background2.draw(canvas);
         }
         canvas.drawBitmap(image,x,y, null);
-        canvas.drawBitmap(left, 100,1600, null);
-        canvas.drawBitmap(right, 800,1600, null);
+
+        if(lastDir == 'L') {
+            canvas.drawBitmap(left2, 0, 1660, null);
+        }
+        else{
+            canvas.drawBitmap(left, 0, 1660, null);
+        }
+        if(lastDir == 'P') {
+            canvas.drawBitmap(right2, 150, 1655, null);
+        }
+        else {
+            canvas.drawBitmap(right, 150, 1655, null);
+        }
+        if(lastDir == 'U') {
+            canvas.drawBitmap(up2, 300, 1660, null);
+        }
+        else {
+            canvas.drawBitmap(up, 300, 1660, null);
+        }
 
         for (Obstacle o: obstacleManager.getObstacles(LEVEL)) {
             o.draw(canvas);
         }
+        Paint paint = new Paint();
+        paint.setColor(Color.GREEN);
+        int size = (int)(505+(jumpBar*1.4));
+        canvas.drawRect(new Rect(505,1660,size,1800),paint);
     }
-
 
     public void update(char dir){
         switch(dir){
             case 'S':
+                jumpBar = 0;
                     if ((this.y != jumpHeight) && !top) {
                         int res = obstacleManager.CollideTop(this.x, this.y, LEVEL);
                         if(res ==1){
@@ -108,6 +139,9 @@ public class Character {
                         if (lastDir == 'L') {
                             y -= speed;
                             x -= speed;
+                        }
+                        if (lastDir == 'U') {
+                            y -= speed;
                         }
                         falling = true;
                     } else if (falling) {
@@ -137,6 +171,9 @@ public class Character {
                             y += speed;
                             x -= speed;
                         }
+                        if (lastDir == 'U') {
+                            y += speed;
+                        }
                     }
 
                     else {
@@ -148,7 +185,10 @@ public class Character {
                 break;
             case 'P':
                 if(obstacleManager.CollideBottom(this.x,this.y,LEVEL) != 1){
+                    y += speed;
+                    x += speed;
                     falling = true;
+                    return;
                 }
                 else {
                     falling = false;
@@ -162,7 +202,10 @@ public class Character {
                 break;
             case 'L':
                 if(obstacleManager.CollideBottom(this.x,this.y,LEVEL) !=1){
+                    y += speed;
+                    x -= speed;
                     falling = true;
+                    return;
                 }
                 else {
                     falling = false;
@@ -176,15 +219,31 @@ public class Character {
 
                 break;
             case 'N':
+                if(jumpBar > maxJumpHeight){
+                    return;
+                }
                     jumpHeight -= speed;
+                    jumpBar += speed;
                     top = false;
-
+                    break;
+            case 'U':
+                lastDir = 'U';
                 break;
 
         }
+
         Log.d("smer", String.valueOf(dir));
     }
     public boolean isFalling(){
         return falling;
+    }
+    public int getLevel(){
+        return this.LEVEL;
+    }
+    public int getX(){
+        return this.x;
+    }
+    public int getY(){
+        return this.y;
     }
 }

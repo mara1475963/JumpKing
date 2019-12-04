@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -30,11 +28,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         editor = preset.edit();
 
 
+
         getHolder().addCallback(this);
 
         thread = new MainThread(getHolder(),this);
         setFocusable(true);
-
     }
 
     @Override
@@ -43,19 +41,38 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        int level;
+        int x;
+        int y;
+
+/*
+        if(preset.getBoolean("com.example.jumpking.newGame",true)){
+           level = 1;
+           x = 500;
+           y = 1415;
+        }
+        else {
+        */
+           level = preset.getInt("com.example.jumpking.level", 1);
+           x = preset.getInt("com.example.jumpking.x", 150);
+           y = preset.getInt("com.example.jumpking.y", 200);
+       // }
+
         Drawable d = getResources().getDrawable(R.drawable.background, null);
         d.setBounds(getLeft(),getTop(),getRight(),getBottom());
         Drawable d2 = getResources().getDrawable(R.drawable.background2, null);
         d2.setBounds(getLeft(),getTop(),getRight(),getBottom());
         Bitmap left = decodeResource(getResources(),R.drawable.left);
         Bitmap right = BitmapFactory.decodeResource(getResources(),R.drawable.right);
-        character = new Character(BitmapFactory.decodeResource(getResources(),R.drawable.knight),d,d2,left,right);
+        Bitmap up = BitmapFactory.decodeResource(getResources(),R.drawable.up);
+        Bitmap left2 = decodeResource(getResources(),R.drawable.left_pressed);
+        Bitmap right2 = BitmapFactory.decodeResource(getResources(),R.drawable.right_pressed);
+        Bitmap up2 = BitmapFactory.decodeResource(getResources(),R.drawable.up_pressed);
+        character = new Character(BitmapFactory.decodeResource(getResources(),R.drawable.knight),d,d2,left,right,up,left2,right2,up2,level,x,y);
 
         thread.setRunning(true);
         thread.start();
     }
-
-
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
@@ -73,30 +90,33 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update(){
         character.update(direction);
-        editor.putInt("com.example.jumpking.level",1);
+
+        editor.putInt("com.example.jumpking.level",character.getLevel());
         editor.commit();
-        editor.putInt("com.example.jumpking.x",1);
+        editor.putInt("com.example.jumpking.x",character.getX());
         editor.commit();
-        editor.putInt("com.example.jumpking.y",1);
+        editor.putInt("com.example.jumpking.y",character.getY());
         editor.commit();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         if(character.isFalling()){
-            direction = 'S';
-            return true;
+            e.setAction(MotionEvent.ACTION_UP);
         }
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 Log.d("x", String.valueOf(e.getX()));
                 Log.d("y", String.valueOf(e.getY()));
 
-                if((e.getX() > 100 && e.getX() <300) && (e.getY() > 1600 && e.getY() <1700)){
+                if((e.getX() > 0 && e.getX() <150) && (e.getY() > 1660 && e.getY() <1820)){
                     direction = 'L';
                 }
-                else if((e.getX() > 800 && e.getX() <1000) && (e.getY() > 1600 && e.getY() <1700)){
+                else if((e.getX() > 150 && e.getX() <300) && (e.getY() > 1660 && e.getY() <1820)){
                     direction = 'P';
+                }
+                else if((e.getX() > 300 && e.getX() <450) && (e.getY() > 1660 && e.getY() <1820)){
+                    direction = 'U';
                 }
                 else{
                     direction = 'N';

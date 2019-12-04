@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">JumpKing</string>
+    <string name="newGame">com.example.jumpking.newGame</string>
     <string name="level">com.example.jumpking.level</string>
     <string name="x">com.example.jumpking.x</string>
     <string name="y">com.example.jumpking.y</string>

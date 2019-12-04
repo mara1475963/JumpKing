@@ -27,16 +27,13 @@ public class ObstacleManager {
             obstacles1.add(rightblock);
             Obstacle middleblock = new Obstacle( new Rect(400,900,700,1100), Color.BLACK);
             obstacles1.add(middleblock);
-            Obstacle right2 = new Obstacle( new Rect(700,600,1300,700), Color.BLACK);
+            Obstacle right2 = new Obstacle( new Rect(900,600,1300,700), Color.BLACK);
             obstacles1.add(right2);
             Obstacle left2 = new Obstacle( new Rect(0,300,400,400), Color.BLACK);
             obstacles1.add(left2);
 
             Obstacle ground2 = new Obstacle( new Rect(600,1700,1310,1800), Color.BLACK);
             obstacles2.add(ground2);
-
-
-
         }
         public ArrayList<Obstacle> getObstacles(int l){
             if(l == 1) {
