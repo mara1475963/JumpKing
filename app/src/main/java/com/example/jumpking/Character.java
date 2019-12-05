@@ -26,10 +26,7 @@ public class Character {
     private Bitmap up2;
     private Drawable background;
     private Drawable background2;
-    private int xVelocity = 10;
-    private int yVelocity = 5;
-    private int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-    private int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+    private Drawable background3;
 
     public int x;
     public int y;
@@ -40,13 +37,18 @@ public class Character {
     private int lastPosition;
     private boolean top;
     private char lastDir = 'P';
-    private boolean falling = false;
+    private boolean falling;
     private ObstacleManager obstacleManager;
     private int LEVEL;
+    private int posx;
+    private int posy;
+    private int jumpCount;
+    private int fallCount;
+    private boolean jumped;
 
-    private int speed = 15;
+    private int speed = 20;
 
-    public Character(Bitmap bmp, Drawable bg,Drawable bg2, Bitmap left, Bitmap right,Bitmap up, Bitmap left2, Bitmap right2,Bitmap up2, int level, int x, int y){
+    public Character(Bitmap bmp, Drawable bg,Drawable bg2,Drawable bg3, Bitmap left, Bitmap right,Bitmap up, Bitmap left2, Bitmap right2,Bitmap up2, int level, int x, int y, int jumps,int falls){
 
         image = bmp;
         this.left = left;
@@ -58,16 +60,21 @@ public class Character {
 
         background = bg;
         background2 = bg2;
+        background3 = bg3;
         this.falling = false;
-        this.x= x;
-        this.y= y;
+        this.x= 200;
+        this.y= 100;
         this.jumpHeight = this.y;
         this.jumpHeight = 0;
         this.maxJumpHeight = 400;
         this.lastPosition = this.y;
         this.top = true;
-        this.LEVEL = level;
-
+        this.LEVEL = 2;
+        this.posx = 400;
+        this.posy = 1600;
+        this.jumpCount = jumps;
+        this.fallCount = falls;
+        this.jumped = false;
         this.obstacleManager = new ObstacleManager();
         obstacleManager.generetateView();
     }
@@ -80,25 +87,42 @@ public class Character {
         else if(LEVEL == 2){
             background2.draw(canvas);
         }
-        canvas.drawBitmap(image,x,y, null);
+        else if(LEVEL == 3){
+            background3.draw(canvas);
+            Paint paint = new Paint();
 
-        if(lastDir == 'L') {
-            canvas.drawBitmap(left2, 0, 1660, null);
+            paint.setColor(Color.WHITE);
+            paint.setTextSize(50);
+            posy -= 10;
+            canvas.drawText("YOU WON", posx+50, posy, paint);
+            canvas.drawText("TotalJumps: " + jumpCount, posx+30, posy+100, paint);
+            canvas.drawText("TotalFalls: " + fallCount, posx+30, posy+200, paint);
+            canvas.drawText("Author: Marek Bauer", posx-30, posy+300, paint);
+            canvas.drawText("TAMZ2(2019)", posx+30, posy+400, paint);
         }
-        else{
-            canvas.drawBitmap(left, 0, 1660, null);
-        }
-        if(lastDir == 'P') {
-            canvas.drawBitmap(right2, 150, 1655, null);
-        }
-        else {
-            canvas.drawBitmap(right, 150, 1655, null);
-        }
-        if(lastDir == 'U') {
-            canvas.drawBitmap(up2, 300, 1660, null);
-        }
-        else {
-            canvas.drawBitmap(up, 300, 1660, null);
+        canvas.drawBitmap(image,x,y, null);
+        if(LEVEL != 3) {
+            if (lastDir == 'L') {
+                canvas.drawBitmap(left2, 0, 1660, null);
+            } else {
+                canvas.drawBitmap(left, 0, 1660, null);
+            }
+            if (lastDir == 'P') {
+                canvas.drawBitmap(right2, 150, 1655, null);
+            } else {
+                canvas.drawBitmap(right, 150, 1655, null);
+            }
+            if (lastDir == 'U') {
+                canvas.drawBitmap(up2, 300, 1660, null);
+            } else {
+                canvas.drawBitmap(up, 300, 1660, null);
+            }
+
+            Paint text = new Paint();
+            text.setColor(Color.WHITE);
+            text.setTextSize(30);
+            canvas.drawText("Jumps: " + jumpCount, 50, 50, text);
+            canvas.drawText("Falls: " + fallCount, 50, 100, text);
         }
 
         for (Obstacle o: obstacleManager.getObstacles(LEVEL)) {
@@ -106,11 +130,17 @@ public class Character {
         }
         Paint paint = new Paint();
         paint.setColor(Color.GREEN);
-        int size = (int)(505+(jumpBar*1.4));
+        int size = (int)(505+(jumpBar*1.3));
         canvas.drawRect(new Rect(505,1660,size,1800),paint);
+
+
+
     }
 
     public void update(char dir){
+        if(LEVEL == 3 && this.y == -200){
+            return;
+        }
         switch(dir){
             case 'S':
                 jumpBar = 0;
@@ -124,12 +154,20 @@ public class Character {
                         else if(res == 2){
                             LEVEL =2;
                             this.y = 1800;
-                            jumpHeight = 1800-jumpHeight;
+                            jumpHeight = 1800+jumpHeight;
+                            Log.d("height", String.valueOf(jumpHeight));
                         }
-                        else if(obstacleManager.CollideRight(this.x, this.y,LEVEL)){
+                        else if(res == 3){
+                            LEVEL = 3;
+                            this.y = 1800;
+                            jumpHeight = -200;
+                        }
+                        Log.d("levl", String.valueOf(LEVEL));
+                        if(obstacleManager.CollideRight(this.x, this.y,LEVEL)){
                             lastDir = 'L';
+
                         }
-                        else if(obstacleManager.CollideLeft(this.x, this.y,LEVEL)){
+                        if(obstacleManager.CollideLeft(this.x, this.y,LEVEL)){
                             lastDir = 'P';
                         }
                         if (lastDir == 'P') {
@@ -148,6 +186,14 @@ public class Character {
                         int res = obstacleManager.CollideBottom(this.x, this.y,LEVEL);
                         if(res==1){
                             falling = false;
+                            if(jumped) {
+                                jumpCount++;
+                            }
+                            jumped=false;
+                            if(lastPosition < this.y){
+                                fallCount++;
+                            }
+                            lastPosition = y;
                             return;
                         }
                         else if(res==2){
@@ -178,9 +224,9 @@ public class Character {
 
                     else {
                         top = true;
-                        lastPosition = y;
-                        jumpHeight = lastPosition;
+                        jumpHeight = y;
                         falling = false;
+
                     }
                 break;
             case 'P':
@@ -188,6 +234,7 @@ public class Character {
                     y += speed;
                     x += speed;
                     falling = true;
+
                     return;
                 }
                 else {
@@ -222,6 +269,7 @@ public class Character {
                 if(jumpBar > maxJumpHeight){
                     return;
                 }
+                    jumped = true;
                     jumpHeight -= speed;
                     jumpBar += speed;
                     top = false;
@@ -246,4 +294,12 @@ public class Character {
     public int getY(){
         return this.y;
     }
+    public int getJumps(){
+        return this.jumpCount;
+    }
+
+    public int getFalls(){
+        return this.fallCount;
+    }
 }
+

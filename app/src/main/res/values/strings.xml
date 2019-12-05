@@ -4,4 +4,6 @@
     <string name="level">com.example.jumpking.level</string>
     <string name="x">com.example.jumpking.x</string>
     <string name="y">com.example.jumpking.y</string>
+    <string name="jumps">com.example.jumpking.jumps</string>
+    <string name="falls">com.example.jumpking.falls</string>
 </resources>

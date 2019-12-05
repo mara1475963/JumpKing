@@ -32,6 +32,7 @@ public class Obstacle {
         return 0;
     }
     public boolean CollideRight(int x, int y){
+
         if(x +95>Consts.screenWidth){
             return true;
         }
