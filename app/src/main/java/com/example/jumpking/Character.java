@@ -1,5 +1,6 @@
 package com.example.jumpking;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -46,7 +47,9 @@ public class Character {
     private int fallCount;
     private boolean jumped;
 
-    private int speed = 20;
+    private int speed = 15;
+    private int jumpspeed = 30;
+    private boolean END = false;
 
     public Character(Bitmap bmp, Drawable bg,Drawable bg2,Drawable bg3, Bitmap left, Bitmap right,Bitmap up, Bitmap left2, Bitmap right2,Bitmap up2, int level, int x, int y, int jumps,int falls){
 
@@ -62,14 +65,15 @@ public class Character {
         background2 = bg2;
         background3 = bg3;
         this.falling = false;
-        this.x= 200;
-        this.y= 100;
+        this.LEVEL = level;
+        this.x= x;
+        this.y= y;
         this.jumpHeight = this.y;
         this.jumpHeight = 0;
         this.maxJumpHeight = 400;
         this.lastPosition = this.y;
         this.top = true;
-        this.LEVEL = 2;
+
         this.posx = 400;
         this.posy = 1600;
         this.jumpCount = jumps;
@@ -132,13 +136,11 @@ public class Character {
         paint.setColor(Color.GREEN);
         int size = (int)(505+(jumpBar*1.3));
         canvas.drawRect(new Rect(505,1660,size,1800),paint);
-
-
-
     }
 
     public void update(char dir){
-        if(LEVEL == 3 && this.y == -200){
+        if(LEVEL == 3 && this.posy < -500){
+            END = true;
             return;
         }
         switch(dir){
@@ -270,8 +272,8 @@ public class Character {
                     return;
                 }
                     jumped = true;
-                    jumpHeight -= speed;
-                    jumpBar += speed;
+                    jumpHeight -= jumpspeed;
+                    jumpBar += jumpspeed;
                     top = false;
                     break;
             case 'U':
@@ -297,9 +299,11 @@ public class Character {
     public int getJumps(){
         return this.jumpCount;
     }
-
     public int getFalls(){
         return this.fallCount;
+    }
+    public boolean getEnd(){
+        return this.END;
     }
 }
 

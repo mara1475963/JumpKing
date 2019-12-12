@@ -1,5 +1,7 @@
 package com.example.jumpking;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
@@ -9,6 +11,9 @@ public class MainThread extends Thread {
     private GameView gameView;
     private boolean running;
     public static Canvas canvas;
+
+    public static final int MaxFPS = 30;
+    private double averageFPS;
 
 
 
@@ -21,16 +26,24 @@ public class MainThread extends Thread {
     }
     @Override
     public void run() {
-        while (running) {
-            canvas = null;
+        long startTime;
+        long timeMilisec = 1000/MaxFPS;
+        long waitTime;
+        int frameCount = 0;
+        long totaltTime =0;
+        long targetTime = 1000/MaxFPS;
 
+        while (running) {
+            startTime = System.nanoTime();
+            canvas = null;
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized(surfaceHolder) {
                     this.gameView.update();
                     this.gameView.draw(canvas);
                 }
-            } catch (Exception e) {} finally {
+            } catch (Exception e) {}
+             finally {
                 if (canvas != null) {
                     try {
                         surfaceHolder.unlockCanvasAndPost(canvas);
@@ -39,9 +52,32 @@ public class MainThread extends Thread {
                     }
                 }
             }
+            timeMilisec = (System.nanoTime() - startTime/1000000);
+            waitTime = targetTime - timeMilisec;
+            try{
+        if(waitTime >0){
+            this.sleep(waitTime);
+        }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            totaltTime += System.nanoTime() - startTime;
+            frameCount++;
+            if(frameCount == MaxFPS){
+                averageFPS = 1000/((totaltTime/frameCount)/1000000);
+                frameCount = 0;
+                totaltTime = 0;
+                System.out.println("FPS: " + averageFPS);
+            }
+
         }
     }
 
+    public void doLose(Context mContext) {
+        synchronized (surfaceHolder) {
+            ((Activity) mContext).finish();
+        }
+    }
 
     public void setRunning(boolean isRunning){
         running = isRunning;

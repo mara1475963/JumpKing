@@ -21,17 +21,17 @@ public class ObstacleManager {
         }
         public void generetateView(){
             //LEVEL 1
-            Obstacle ground = new Obstacle( new Rect(0,1500,1310,1600), Color.GRAY);
+            Obstacle ground = new Obstacle( new Rect(0,1500,1310,1600), Color.BLACK);
             obstacles1.add(ground);
-            Obstacle leftblock = new Obstacle( new Rect(0,1300,300,1500), Color.GRAY);
+            Obstacle leftblock = new Obstacle( new Rect(0,1300,300,1500), Color.BLACK);
             obstacles1.add(leftblock);
-            Obstacle rightblock = new Obstacle( new Rect(800,1300,1300,1500), Color.GRAY);
+            Obstacle rightblock = new Obstacle( new Rect(800,1300,1300,1500), Color.BLACK);
             obstacles1.add(rightblock);
-            Obstacle middleblock = new Obstacle( new Rect(400,900,700,1100), Color.GRAY);
+            Obstacle middleblock = new Obstacle( new Rect(400,1000,700,1100), Color.BLACK);
             obstacles1.add(middleblock);
-            Obstacle right2 = new Obstacle( new Rect(900,600,1300,700), Color.GRAY);
+            Obstacle right2 = new Obstacle( new Rect(900,600,1300,700), Color.BLACK);
             obstacles1.add(right2);
-            Obstacle left2 = new Obstacle( new Rect(0,300,400,400), Color.GRAY);
+            Obstacle left2 = new Obstacle( new Rect(0,250,400,400), Color.BLACK);
             obstacles1.add(left2);
             //LEVEL 2
             Obstacle ground2 = new Obstacle( new Rect(600,1700,1310,1800), Color.BLUE);

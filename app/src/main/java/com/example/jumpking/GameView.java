@@ -1,6 +1,7 @@
 package com.example.jumpking;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,9 +22,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private char direction = 'S';
     SharedPreferences preset;
     SharedPreferences.Editor editor;
+    private Context cntxt;
 
     public GameView(Context context){
         super(context);
+        cntxt = context;
         preset = PreferenceManager.getDefaultSharedPreferences(context);
         editor = preset.edit();
 
@@ -47,7 +50,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         int jumps;
         int falls;
 
-/*
+
         if(preset.getBoolean("com.example.jumpking.newGame",true)){
            level = 1;
            x = 500;
@@ -56,13 +59,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
            falls = 0;
         }
         else {
-        */
            level = preset.getInt("com.example.jumpking.level", 1);
            x = preset.getInt("com.example.jumpking.x", 150);
            y = preset.getInt("com.example.jumpking.y", 200);
            jumps = preset.getInt("com.example.jumpking.jumps", 0);
            falls = preset.getInt("com.example.jumpking.falls", 0);
-       // }
+       }
 
         Drawable d = getResources().getDrawable(R.drawable.background, null);
         d.setBounds(getLeft(),getTop(),getRight(),getBottom());
@@ -99,17 +101,39 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void update(){
         character.update(direction);
 
-        editor.putInt("com.example.jumpking.level",character.getLevel());
-        editor.commit();
-        editor.putInt("com.example.jumpking.x",character.getX());
-        editor.commit();
-        editor.putInt("com.example.jumpking.y",character.getY());
-        editor.commit();
-        editor.putInt("com.example.jumpking.jumps",character.getJumps());
-        editor.commit();
-        editor.putInt("com.example.jumpking.falls",character.getFalls());
-        editor.commit();
 
+        if(character.getEnd()){
+            editor.putInt("com.example.jumpking.level",1);
+            editor.commit();
+            editor.putInt("com.example.jumpking.x",500);
+            editor.commit();
+            editor.putInt("com.example.jumpking.y",1415);
+            editor.commit();
+            editor.putInt("com.example.jumpking.jumps",0);
+            editor.putInt("com.example.jumpking.falls",0);
+            editor.commit();
+
+            thread.doLose(cntxt);
+            Intent intent =new Intent(this.cntxt, ScoreActivity.class);
+            intent.putExtra("jumps", character.getJumps());
+            intent.putExtra("falls", character.getFalls());
+            intent.putExtra("add", true);
+            this.cntxt.startActivity(intent);
+
+            thread.setRunning(false);
+        }
+        else {
+            editor.putInt("com.example.jumpking.level", character.getLevel());
+            editor.commit();
+            editor.putInt("com.example.jumpking.x", character.getX());
+            editor.commit();
+            editor.putInt("com.example.jumpking.y", character.getY());
+            editor.commit();
+            editor.putInt("com.example.jumpking.jumps", character.getJumps());
+            editor.commit();
+            editor.putInt("com.example.jumpking.falls", character.getFalls());
+            editor.commit();
+        }
     }
 
     @Override

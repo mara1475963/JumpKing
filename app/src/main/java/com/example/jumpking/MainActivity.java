@@ -16,6 +16,7 @@ public class MainActivity extends Activity {
 
     Button newGame;
     Button continueGame;
+    Button score;
     SharedPreferences preset;
     SharedPreferences.Editor editor;
 
@@ -29,11 +30,12 @@ public class MainActivity extends Activity {
         preset = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preset.edit();
 
-        setContentView(new GameView(this));
-       /* setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
         newGame = findViewById(R.id.newgame);
         continueGame = findViewById(R.id.continueGame);
+        score = findViewById(R.id.score);
+
         newGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,6 +56,13 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
-*/
+        score.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent =new Intent(getApplicationContext(),ScoreActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
