@@ -7,11 +7,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
+import org.apache.commons.net.ftp.FTPClient;
 
 import static android.graphics.BitmapFactory.decodeResource;
 
@@ -23,13 +25,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     SharedPreferences preset;
     SharedPreferences.Editor editor;
     private Context cntxt;
+    final MediaPlayer mp;
 
     public GameView(Context context){
         super(context);
+
+
         cntxt = context;
         preset = PreferenceManager.getDefaultSharedPreferences(context);
         editor = preset.edit();
-
+        mp = MediaPlayer.create(this.cntxt, R.raw.jump1);
 
 
         getHolder().addCallback(this);
@@ -78,7 +83,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Bitmap left2 = decodeResource(getResources(),R.drawable.left_pressed);
         Bitmap right2 = BitmapFactory.decodeResource(getResources(),R.drawable.right_pressed);
         Bitmap up2 = BitmapFactory.decodeResource(getResources(),R.drawable.up_pressed);
-        character = new Character(BitmapFactory.decodeResource(getResources(),R.drawable.knight),d,d2,d3,left,right,up,left2,right2,up2,level,x,y, jumps,falls);
+        character = new Character(cntxt,BitmapFactory.decodeResource(getResources(),R.drawable.knight),d,d2,d3,left,right,up,left2,right2,up2,level,x,y, jumps,falls);
 
         thread.setRunning(true);
         thread.start();
@@ -161,6 +166,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                 break;
             case MotionEvent.ACTION_UP:
+                if(direction == 'N'){mp.start();}
                 direction = 'S';
                 break;
         }

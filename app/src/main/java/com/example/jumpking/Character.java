@@ -1,21 +1,15 @@
 package com.example.jumpking;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Picture;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.preference.PreferenceManager;
+import android.media.MediaPlayer;
 import android.util.Log;
 
-import static com.example.jumpking.MainThread.canvas;
 
 public class Character {
     private Bitmap image;
@@ -50,8 +44,10 @@ public class Character {
     private int speed = 15;
     private int jumpspeed = 30;
     private boolean END = false;
+    final MediaPlayer mp;
+    final MediaPlayer mp2;
 
-    public Character(Bitmap bmp, Drawable bg,Drawable bg2,Drawable bg3, Bitmap left, Bitmap right,Bitmap up, Bitmap left2, Bitmap right2,Bitmap up2, int level, int x, int y, int jumps,int falls){
+    public Character(Context c, Bitmap bmp, Drawable bg, Drawable bg2, Drawable bg3, Bitmap left, Bitmap right, Bitmap up, Bitmap left2, Bitmap right2, Bitmap up2, int level, int x, int y, int jumps, int falls){
 
         image = bmp;
         this.left = left;
@@ -81,6 +77,9 @@ public class Character {
         this.jumped = false;
         this.obstacleManager = new ObstacleManager();
         obstacleManager.generetateView();
+
+        mp = MediaPlayer.create(c,R.raw.fall);
+        mp2 = MediaPlayer.create(c,R.raw.win);
     }
 
     public  void draw(Canvas canvas){
@@ -123,7 +122,7 @@ public class Character {
             }
 
             Paint text = new Paint();
-            text.setColor(Color.WHITE);
+            text.setColor(Color.BLACK);
             text.setTextSize(30);
             canvas.drawText("Jumps: " + jumpCount, 50, 50, text);
             canvas.drawText("Falls: " + fallCount, 50, 100, text);
@@ -139,14 +138,20 @@ public class Character {
     }
 
     public void update(char dir){
+
         if(LEVEL == 3 && this.posy < -500){
+
             END = true;
+            return;
+        }
+        if(LEVEL == 3 && this.y < -100){
+            this.y = -100;
             return;
         }
         switch(dir){
             case 'S':
                 jumpBar = 0;
-                    if ((this.y != jumpHeight) && !top) {
+                    if ((this.y > jumpHeight) && !top) {
                         int res = obstacleManager.CollideTop(this.x, this.y, LEVEL);
                         if(res ==1){
                             falling = true;
@@ -157,9 +162,11 @@ public class Character {
                             LEVEL =2;
                             this.y = 1800;
                             jumpHeight = 1800+jumpHeight;
+                            lastPosition = 1800;
                             Log.d("height", String.valueOf(jumpHeight));
                         }
                         else if(res == 3){
+                            mp2.start();
                             LEVEL = 3;
                             this.y = 1800;
                             jumpHeight = -200;
@@ -193,12 +200,17 @@ public class Character {
                             }
                             jumped=false;
                             if(lastPosition < this.y){
+
+                                mp.start();
                                 fallCount++;
                             }
                             lastPosition = y;
                             return;
                         }
                         else if(res==2){
+                                mp.start();
+                                fallCount++;
+
                             this.y = 0;
                             LEVEL = 1;
                             return;

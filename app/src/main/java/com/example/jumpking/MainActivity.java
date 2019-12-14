@@ -30,7 +30,10 @@ public class MainActivity extends Activity {
         preset = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preset.edit();
 
+
+        //setContentView(new GameView(this));
         setContentView(R.layout.activity_main);
+
 
         newGame = findViewById(R.id.newgame);
         continueGame = findViewById(R.id.continueGame);
@@ -61,8 +64,11 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
 
                 Intent intent =new Intent(getApplicationContext(),ScoreActivity.class);
+                intent.putExtra("add", true);
                 startActivity(intent);
             }
         });
+
+
     }
 }
