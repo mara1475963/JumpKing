@@ -34,7 +34,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         cntxt = context;
         preset = PreferenceManager.getDefaultSharedPreferences(context);
         editor = preset.edit();
-        mp = MediaPlayer.create(this.cntxt, R.raw.jump1);
+        mp = MediaPlayer.create(this.cntxt, R.raw.jump);
 
 
         getHolder().addCallback(this);

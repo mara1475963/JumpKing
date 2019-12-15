@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -20,6 +21,7 @@ public class MainActivity extends Activity {
     SharedPreferences preset;
     SharedPreferences.Editor editor;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +32,8 @@ public class MainActivity extends Activity {
         preset = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preset.edit();
 
-
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.soundtrack);
+        mp.start();
         //setContentView(new GameView(this));
         setContentView(R.layout.activity_main);
 
@@ -44,6 +47,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 editor.putBoolean("com.example.jumpking.newGame",true);
                 editor.commit();
+                mp.stop();
 
                 Intent intent =new Intent(getApplicationContext(),GameActivity.class);
                 startActivity(intent);
@@ -54,6 +58,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 editor.putBoolean("com.example.jumpking.newGame",false);
                 editor.commit();
+                mp.stop();
 
                 Intent intent =new Intent(getApplicationContext(),GameActivity.class);
                 startActivity(intent);
@@ -64,7 +69,6 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
 
                 Intent intent =new Intent(getApplicationContext(),ScoreActivity.class);
-                intent.putExtra("add", true);
                 startActivity(intent);
             }
         });

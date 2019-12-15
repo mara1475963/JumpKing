@@ -46,6 +46,9 @@ public class Character {
     private boolean END = false;
     final MediaPlayer mp;
     final MediaPlayer mp2;
+    final MediaPlayer jmp;
+    final MediaPlayer lnd;
+    final MediaPlayer col;
 
     public Character(Context c, Bitmap bmp, Drawable bg, Drawable bg2, Drawable bg3, Bitmap left, Bitmap right, Bitmap up, Bitmap left2, Bitmap right2, Bitmap up2, int level, int x, int y, int jumps, int falls){
 
@@ -78,8 +81,10 @@ public class Character {
         this.obstacleManager = new ObstacleManager();
         obstacleManager.generetateView();
 
-        mp = MediaPlayer.create(c,R.raw.fall);
+        mp = MediaPlayer.create(c,R.raw.sadsound2);
+        lnd = MediaPlayer.create(c,R.raw.land);
         mp2 = MediaPlayer.create(c,R.raw.win);
+        col = MediaPlayer.create(c,R.raw.collision);
     }
 
     public  void draw(Canvas canvas){
@@ -154,6 +159,7 @@ public class Character {
                     if ((this.y > jumpHeight) && !top) {
                         int res = obstacleManager.CollideTop(this.x, this.y, LEVEL);
                         if(res ==1){
+                            col.start();
                             falling = true;
                             jumpHeight=y;
                             top = true;
@@ -173,10 +179,12 @@ public class Character {
                         }
                         Log.d("levl", String.valueOf(LEVEL));
                         if(obstacleManager.CollideRight(this.x, this.y,LEVEL)){
+                            col.start();
                             lastDir = 'L';
 
                         }
                         if(obstacleManager.CollideLeft(this.x, this.y,LEVEL)){
+                            col.start();
                             lastDir = 'P';
                         }
                         if (lastDir == 'P') {
@@ -194,21 +202,19 @@ public class Character {
                     } else if (falling) {
                         int res = obstacleManager.CollideBottom(this.x, this.y,LEVEL);
                         if(res==1){
+                            lnd.start();
                             falling = false;
                             if(jumped) {
                                 jumpCount++;
                             }
                             jumped=false;
                             if(lastPosition < this.y){
-
-                                mp.start();
                                 fallCount++;
                             }
                             lastPosition = y;
                             return;
                         }
                         else if(res==2){
-                                mp.start();
                                 fallCount++;
 
                             this.y = 0;
@@ -216,9 +222,11 @@ public class Character {
                             return;
                         }
                         if(obstacleManager.CollideRight(this.x, this.y,LEVEL)){
+                            col.start();
                             lastDir = 'L';
                         }
                         if(obstacleManager.CollideLeft(this.x, this.y,LEVEL)){
+                            col.start();
                             lastDir = 'P';
                         }
                         top = true;
@@ -259,6 +267,9 @@ public class Character {
                         x += speed;
                         lastDir = 'P';
                     }
+                    else{
+                        col.start();
+                    }
                 }
                 break;
             case 'L':
@@ -275,6 +286,9 @@ public class Character {
                     if(!obstacleManager.CollideLeft(this.x, this.y,LEVEL )) {
                         x -= speed;
                         lastDir = 'L';
+                    }
+                    else{
+                        col.start();
                     }
                 }
 
