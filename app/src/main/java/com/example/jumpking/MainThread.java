@@ -30,7 +30,7 @@ public class MainThread extends Thread {
         long timeMilisec = 1000/MaxFPS;
         long waitTime;
         int frameCount = 0;
-        long totaltTime =0;
+        long totalTime =0;
         long targetTime = 1000/MaxFPS;
 
         while (running) {
@@ -52,8 +52,9 @@ public class MainThread extends Thread {
                     }
                 }
             }
-            timeMilisec = (System.nanoTime() - startTime/1000000);
+            timeMilisec = (System.nanoTime() - startTime)/1000000;
             waitTime = targetTime - timeMilisec;
+
             try{
         if(waitTime >0){
             this.sleep(waitTime);
@@ -61,12 +62,12 @@ public class MainThread extends Thread {
             }catch(Exception e){
                 e.printStackTrace();
             }
-            totaltTime += System.nanoTime() - startTime;
+            totalTime += System.nanoTime() - startTime;
             frameCount++;
             if(frameCount == MaxFPS){
-                averageFPS = 1000/((totaltTime/frameCount)/1000000);
+                averageFPS = 1000/((totalTime/frameCount)/1000000);
                 frameCount = 0;
-                totaltTime = 0;
+                totalTime = 0;
                 System.out.println("FPS: " + averageFPS);
             }
 

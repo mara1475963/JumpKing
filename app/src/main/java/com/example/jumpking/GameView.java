@@ -71,19 +71,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
            falls = preset.getInt("com.example.jumpking.falls", 0);
        }
 
-        Drawable d = getResources().getDrawable(R.drawable.background, null);
-        d.setBounds(getLeft(),getTop(),getRight(),getBottom());
-        Drawable d2 = getResources().getDrawable(R.drawable.background2, null);
-        d2.setBounds(getLeft(),getTop(),getRight(),getBottom());
-        Drawable d3 = getResources().getDrawable(R.drawable.background3, null);
-        d3.setBounds(getLeft(),getTop(),getRight(),getBottom());
         Bitmap left = decodeResource(getResources(),R.drawable.left);
         Bitmap right = BitmapFactory.decodeResource(getResources(),R.drawable.right);
         Bitmap up = BitmapFactory.decodeResource(getResources(),R.drawable.up);
         Bitmap left2 = decodeResource(getResources(),R.drawable.left_pressed);
         Bitmap right2 = BitmapFactory.decodeResource(getResources(),R.drawable.right_pressed);
         Bitmap up2 = BitmapFactory.decodeResource(getResources(),R.drawable.up_pressed);
-        character = new Character(cntxt,BitmapFactory.decodeResource(getResources(),R.drawable.knight),d,d2,d3,left,right,up,left2,right2,up2,level,x,y, jumps,falls);
+        character = new Character(cntxt,BitmapFactory.decodeResource(getResources(),R.drawable.knight),left,right,up,left2,right2,up2,level,x,y, jumps,falls);
 
         thread.setRunning(true);
         thread.start();
@@ -115,6 +109,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             editor.putInt("com.example.jumpking.y",1415);
             editor.commit();
             editor.putInt("com.example.jumpking.jumps",0);
+            editor.commit();
             editor.putInt("com.example.jumpking.falls",0);
             editor.commit();
 

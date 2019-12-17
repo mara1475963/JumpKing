@@ -102,14 +102,12 @@ public class ScoreActivity extends AppCompatActivity {
             type.setText("Local Score");
             String data = Load();
             Show(data);
-
         }
         if (id == R.id.global)
         {
             type.setText("Global Score");
             String data = LoadGlobal();
             Show(data);
-
         }
 
         return true;

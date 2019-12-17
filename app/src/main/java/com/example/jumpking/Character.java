@@ -1,7 +1,9 @@
 package com.example.jumpking;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -19,9 +21,9 @@ public class Character {
     private Bitmap left2;
     private Bitmap right2;
     private Bitmap up2;
-    private Drawable background;
-    private Drawable background2;
-    private Drawable background3;
+    private Bitmap background;
+    private Bitmap background2;
+    private Bitmap background3;
 
     public int x;
     public int y;
@@ -41,16 +43,15 @@ public class Character {
     private int fallCount;
     private boolean jumped;
 
-    private int speed = 15;
-    private int jumpspeed = 30;
+    private int speed = 9;
+    private int jumpspeed = 20;
     private boolean END = false;
     final MediaPlayer mp;
     final MediaPlayer mp2;
-    final MediaPlayer jmp;
     final MediaPlayer lnd;
     final MediaPlayer col;
 
-    public Character(Context c, Bitmap bmp, Drawable bg, Drawable bg2, Drawable bg3, Bitmap left, Bitmap right, Bitmap up, Bitmap left2, Bitmap right2, Bitmap up2, int level, int x, int y, int jumps, int falls){
+    public Character(Context c, Bitmap bmp, Bitmap left, Bitmap right, Bitmap up, Bitmap left2, Bitmap right2, Bitmap up2, int level, int x, int y, int jumps, int falls){
 
         image = bmp;
         this.left = left;
@@ -60,9 +61,17 @@ public class Character {
         this.right2 = right2;
         this.up2 = up2;
 
-        background = bg;
-        background2 = bg2;
-        background3 = bg3;
+
+        Resources res = c.getResources();
+        Bitmap mBitmap = BitmapFactory.decodeResource(res, R.drawable.background);
+        Bitmap mBitmap2 = BitmapFactory.decodeResource(res, R.drawable.background2);
+        Bitmap mBitmap3 = BitmapFactory.decodeResource(res, R.drawable.background3);
+        background = Bitmap.createScaledBitmap(mBitmap, 1300, 1800,false);
+        background2 = Bitmap.createScaledBitmap(mBitmap2, 1300, 1800,false);
+        background3 = Bitmap.createScaledBitmap(mBitmap3, 1300, 1800,false);
+
+
+
         this.falling = false;
         this.LEVEL = level;
         this.x= x;
@@ -88,15 +97,14 @@ public class Character {
     }
 
     public  void draw(Canvas canvas){
-
         if(LEVEL == 1) {
-            background.draw(canvas);
+            canvas.drawBitmap(background, 0, 0, null);
         }
         else if(LEVEL == 2){
-            background2.draw(canvas);
+            canvas.drawBitmap(background2, 0, 0, null);
         }
         else if(LEVEL == 3){
-            background3.draw(canvas);
+            canvas.drawBitmap(background3, 0, 0, null);
             Paint paint = new Paint();
 
             paint.setColor(Color.WHITE);
@@ -116,9 +124,9 @@ public class Character {
                 canvas.drawBitmap(left, 0, 1660, null);
             }
             if (lastDir == 'P') {
-                canvas.drawBitmap(right2, 150, 1655, null);
+                canvas.drawBitmap(right2, 150, 1658, null);
             } else {
-                canvas.drawBitmap(right, 150, 1655, null);
+                canvas.drawBitmap(right, 150, 1658, null);
             }
             if (lastDir == 'U') {
                 canvas.drawBitmap(up2, 300, 1660, null);
@@ -143,7 +151,6 @@ public class Character {
     }
 
     public void update(char dir){
-
         if(LEVEL == 3 && this.posy < -500){
 
             END = true;
