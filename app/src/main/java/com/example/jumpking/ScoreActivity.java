@@ -79,7 +79,7 @@ public class ScoreActivity extends AppCompatActivity {
             });
         }
         else{
-            type.setText("Local Score");
+            type.setText("Global Score");
             String data = LoadGlobal();
             Show(data);
 

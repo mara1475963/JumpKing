@@ -18,6 +18,7 @@ public class Obstacle {
     public  void draw(Canvas canvas){
         Paint paint = new Paint();
         paint.setColor(color);
+        paint.setStrokeWidth(2);
         canvas.drawRect(rectangle,paint);
     }
 
@@ -26,17 +27,17 @@ public class Obstacle {
         if(y>1800){
             return 2;
         }
-        if((rectangle.contains(x+20,y+87)) || (rectangle.contains(x+65,y+87))){
+        if((rectangle.contains(x +10,y+Consts.getCharY() +5)) || (rectangle.contains(x+Consts.getCharX()-10,y+Consts.getCharY() +5))){
             return 1;
         }
         return 0;
     }
     public boolean CollideRight(int x, int y){
 
-        if(x +95>Consts.screenWidth){
+        if(x + Consts.getCharX() > Consts.screenWidth){
             return true;
         }
-        if((rectangle.contains(x+90,y+20)) || (rectangle.contains(x+90,y+65))){
+        if((rectangle.contains(x+Consts.getCharX() + 5,y+10)) || (rectangle.contains(x+Consts.getCharX() + 5,y+Consts.getCharY()-10))){
             return true;
         }
 
@@ -46,7 +47,7 @@ public class Obstacle {
         if(x<10){
             return true;
         }
-        if((rectangle.contains(x-10,y+20)) || (rectangle.contains(x-10,y+65))){
+        if((rectangle.contains(x-10,y+10)) || (rectangle.contains(x-10,y+Consts.getCharX()-10))){
             return true;
         }
         return false;
@@ -55,7 +56,7 @@ public class Obstacle {
         if(y<0){
             return 2;
         }
-        if((rectangle.contains(x+10,y-15)) || (rectangle.contains(x+75,y-15))){
+        if((rectangle.contains(x+10,y-15)) || (rectangle.contains(x+Consts.getCharX()-10,y-15))){
             return 1;
         }
         return 0;

@@ -15,6 +15,7 @@ import android.util.Log;
 
 public class Character {
     private Bitmap image;
+    private Bitmap image2;
     private Bitmap left;
     private Bitmap right;
     private Bitmap up;
@@ -54,6 +55,7 @@ public class Character {
     public Character(Context c, Bitmap bmp, Bitmap left, Bitmap right, Bitmap up, Bitmap left2, Bitmap right2, Bitmap up2, int level, int x, int y, int jumps, int falls){
 
         image = bmp;
+
         this.left = left;
         this.right = right;
         this.up = up;
@@ -63,14 +65,14 @@ public class Character {
 
 
         Resources res = c.getResources();
-        Bitmap mBitmap = BitmapFactory.decodeResource(res, R.drawable.background);
-        Bitmap mBitmap2 = BitmapFactory.decodeResource(res, R.drawable.background2);
-        Bitmap mBitmap3 = BitmapFactory.decodeResource(res, R.drawable.background3);
-        background = Bitmap.createScaledBitmap(mBitmap, 1300, 1800,false);
-        background2 = Bitmap.createScaledBitmap(mBitmap2, 1300, 1800,false);
-        background3 = Bitmap.createScaledBitmap(mBitmap3, 1300, 1800,false);
+        Bitmap mBitmap = BitmapFactory.decodeResource(res, R.drawable.bg1);
+        Bitmap mBitmap2 = BitmapFactory.decodeResource(res, R.drawable.bg2);
+        Bitmap mBitmap3 = BitmapFactory.decodeResource(res, R.drawable.space);
+        background = Bitmap.createScaledBitmap(mBitmap, Consts.screenWidth, Consts.screenHeight,false);
+        background2 = Bitmap.createScaledBitmap(mBitmap2, Consts.screenWidth, Consts.screenHeight,false);
+        background3 = Bitmap.createScaledBitmap(mBitmap3, Consts.screenWidth, Consts.screenHeight,false);
 
-
+        image2 = BitmapFactory.decodeResource(c.getResources(),R.drawable.knightright);
 
         this.falling = false;
         this.LEVEL = level;
@@ -94,9 +96,13 @@ public class Character {
         lnd = MediaPlayer.create(c,R.raw.land);
         mp2 = MediaPlayer.create(c,R.raw.win);
         col = MediaPlayer.create(c,R.raw.collision);
+
+        Consts consts = new Consts(image.getWidth(),image.getHeight());
     }
 
     public  void draw(Canvas canvas){
+
+
         if(LEVEL == 1) {
             canvas.drawBitmap(background, 0, 0, null);
         }
@@ -105,33 +111,37 @@ public class Character {
         }
         else if(LEVEL == 3){
             canvas.drawBitmap(background3, 0, 0, null);
+            canvas.drawBitmap(image,x,y, null);
             Paint paint = new Paint();
 
             paint.setColor(Color.WHITE);
             paint.setTextSize(50);
-            posy -= 10;
+            posy -= 8;
             canvas.drawText("YOU WON", posx+50, posy, paint);
             canvas.drawText("TotalJumps: " + jumpCount, posx+30, posy+100, paint);
             canvas.drawText("TotalFalls: " + fallCount, posx+30, posy+200, paint);
             canvas.drawText("Author: Marek Bauer", posx-30, posy+300, paint);
             canvas.drawText("TAMZ2(2019)", posx+30, posy+400, paint);
         }
-        canvas.drawBitmap(image,x,y, null);
+
+
         if(LEVEL != 3) {
             if (lastDir == 'L') {
-                canvas.drawBitmap(left2, 0, 1660, null);
+                canvas.drawBitmap(left2, 0, Consts.screenHeight-130, null);
+                canvas.drawBitmap(image,x,y, null);
             } else {
-                canvas.drawBitmap(left, 0, 1660, null);
+                canvas.drawBitmap(left, 0, Consts.screenHeight-130, null);
+                canvas.drawBitmap(image2,x,y, null);
             }
             if (lastDir == 'P') {
-                canvas.drawBitmap(right2, 150, 1658, null);
+                canvas.drawBitmap(right2, 150, Consts.screenHeight-132, null);
             } else {
-                canvas.drawBitmap(right, 150, 1658, null);
+                canvas.drawBitmap(right, 150, Consts.screenHeight-132, null);
             }
             if (lastDir == 'U') {
-                canvas.drawBitmap(up2, 300, 1660, null);
+                canvas.drawBitmap(up2, 300, Consts.screenHeight-130, null);
             } else {
-                canvas.drawBitmap(up, 300, 1660, null);
+                canvas.drawBitmap(up, 300, Consts.screenHeight-130, null);
             }
 
             Paint text = new Paint();
@@ -147,17 +157,16 @@ public class Character {
         Paint paint = new Paint();
         paint.setColor(Color.GREEN);
         int size = (int)(505+(jumpBar*1.3));
-        canvas.drawRect(new Rect(505,1660,size,1800),paint);
+        canvas.drawRect(new Rect(505,Consts.screenHeight-130,size,Consts.screenHeight),paint);
     }
 
     public void update(char dir){
         if(LEVEL == 3 && this.posy < -500){
-
             END = true;
             return;
         }
-        if(LEVEL == 3 && this.y < -100){
-            this.y = -100;
+        if(LEVEL == 3 && this.y < -200){
+            this.y = -150;
             return;
         }
         switch(dir){
@@ -188,7 +197,6 @@ public class Character {
                         if(obstacleManager.CollideRight(this.x, this.y,LEVEL)){
                             col.start();
                             lastDir = 'L';
-
                         }
                         if(obstacleManager.CollideLeft(this.x, this.y,LEVEL)){
                             col.start();
@@ -337,6 +345,12 @@ public class Character {
     }
     public boolean getEnd(){
         return this.END;
+    }
+    public int getCharWidth(){
+        return image.getWidth();
+    }
+    public int getCharHight(){
+        return image.getHeight();
     }
 }
 

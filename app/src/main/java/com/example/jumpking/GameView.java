@@ -59,14 +59,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if(preset.getBoolean("com.example.jumpking.newGame",true)){
            level = 1;
            x = 500;
-           y = 1415;
+           y = 1390;
            jumps = 0;
            falls = 0;
         }
         else {
            level = preset.getInt("com.example.jumpking.level", 1);
-           x = preset.getInt("com.example.jumpking.x", 150);
-           y = preset.getInt("com.example.jumpking.y", 200);
+           x = preset.getInt("com.example.jumpking.x", 500);
+           y = preset.getInt("com.example.jumpking.y", 1390);
            jumps = preset.getInt("com.example.jumpking.jumps", 0);
            falls = preset.getInt("com.example.jumpking.falls", 0);
        }
@@ -77,7 +77,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Bitmap left2 = decodeResource(getResources(),R.drawable.left_pressed);
         Bitmap right2 = BitmapFactory.decodeResource(getResources(),R.drawable.right_pressed);
         Bitmap up2 = BitmapFactory.decodeResource(getResources(),R.drawable.up_pressed);
-        character = new Character(cntxt,BitmapFactory.decodeResource(getResources(),R.drawable.knight),left,right,up,left2,right2,up2,level,x,y, jumps,falls);
+        Bitmap charact = BitmapFactory.decodeResource(getResources(),R.drawable.knight);
+        character = new Character(cntxt,charact,left,right,up,left2,right2,up2,level,x,y, jumps,falls);
 
         thread.setRunning(true);
         thread.start();
@@ -106,7 +107,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             editor.commit();
             editor.putInt("com.example.jumpking.x",500);
             editor.commit();
-            editor.putInt("com.example.jumpking.y",1415);
+            editor.putInt("com.example.jumpking.y",1390);
             editor.commit();
             editor.putInt("com.example.jumpking.jumps",0);
             editor.commit();
@@ -146,13 +147,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 Log.d("x", String.valueOf(e.getX()));
                 Log.d("y", String.valueOf(e.getY()));
 
-                if((e.getX() > 0 && e.getX() <150) && (e.getY() > 1660 && e.getY() <1820)){
+                if((e.getX() > 0 && e.getX() <150) && (e.getY() > Consts.screenHeight-130 && e.getY() <Consts.screenHeight)){
                     direction = 'L';
                 }
-                else if((e.getX() > 150 && e.getX() <300) && (e.getY() > 1660 && e.getY() <1820)){
+                else if((e.getX() > 150 && e.getX() <300) && (e.getY() > Consts.screenHeight-130 && e.getY() <Consts.screenHeight)){
                     direction = 'P';
                 }
-                else if((e.getX() > 300 && e.getX() <450) && (e.getY() > 1660 && e.getY() <1820)){
+                else if((e.getX() > 300 && e.getX() <450) && (e.getY() > Consts.screenHeight-130 && e.getY() <Consts.screenHeight)){
                     direction = 'U';
                 }
                 else{
